@@ -2,6 +2,7 @@ import * as mammoth from "mammoth";
 import { PDFParse } from "pdf-parse";
 import type { ParsedDocument } from "@/lib/types";
 import path from "path";
+import { pathToFileURL } from "url";
 
 export async function parseUploadedFile(file: File): Promise<ParsedDocument> {
   const extension = getExtension(file.name);
@@ -13,7 +14,7 @@ export async function parseUploadedFile(file: File): Promise<ParsedDocument> {
   if (extension === "pdf") {
     // Set worker source for Node.js environment
     const workerPath = path.resolve("node_modules/pdf-parse/dist/pdf-parse/esm/pdf.worker.mjs");
-    PDFParse.setWorker(workerPath);
+    PDFParse.setWorker(pathToFileURL(workerPath).href);
 
     const parser = new PDFParse({ data: bytes });
     try {
